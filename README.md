@@ -11,6 +11,12 @@
   * Location: /server
   * Start Command: npm start
   * URL: http://localhost:3111
+  
+## Prediction Endpoint Validation Images
+
+  * This is a small set of validation images
+  * For smoke testing the prediction endpoints
+  * Location: /val-images
 
 ## Machine Learning Model Endpoints
 
