@@ -22,6 +22,7 @@
         * Content-Type: application/octet-stream
       * Body:
         * form-data: {'image': file}
+        * prediction endpoint image-size limit: 4MB
     * Example response:
 
 ```
@@ -82,6 +83,9 @@
 
   * Azuer ML Service Custom Endpoint
     * https://ai-vehicle-id-202411181207.australiaeast.inference.ml.azure.com/predict
+    * No CORS implemented
+      * will only work behind express, or with Postman (as it ignores CORS headers)
+      * but will not pass browser CORS preflight
     * Request format:
       * Headers:
         * Content-Transfer-Encoding: application/json
