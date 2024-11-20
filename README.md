@@ -6,7 +6,12 @@
   * Start Command: npm run dev
   * URL: http://localhost:5173/
 
-[Frontend UI](ai_vehicle_id_ui.png)
+<br />
+<div align="center">
+  <a href="https://github.com/Astrotope/mr-level-05-fsd-mission-01-ai">
+    <img src="images/ai_vehicle_id_ui.png" alt="Logo" width="4200" height="auto">
+  </a>
+</div>
 
 ## Backend API Endpoint Wrapper (Nodej.js, Express.js)
 
