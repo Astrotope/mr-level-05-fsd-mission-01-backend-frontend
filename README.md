@@ -6,6 +6,8 @@
   * Start Command: npm run dev
   * URL: http://localhost:5173/
 
+[Frontend UI](ai_vehicle_id_ui.png)
+
 ## Backend API Endpoint Wrapper (Nodej.js, Express.js)
 
   * Location: /server
