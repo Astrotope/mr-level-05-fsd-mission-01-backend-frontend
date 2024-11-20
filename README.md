@@ -5,7 +5,7 @@
   * Location: /
   * Start Command: npm run dev
   * URL: http://localhost:5173/
-  
+
 ## Backend API Endpoint Wrapper (Nodej.js, Express.js)
 
   * Location: /server
@@ -23,26 +23,60 @@
       * Body:
         * form-data: {'image': file}
     * Example response:
-    
+
 ```
 {
-    "message": "Image and form data received and processed successfully!",
-    "prediction": {
-        "category": "van",
-        "probability": 0.9991376399993896
-    },
-    "predictions": {
-        "cab": 1.1198282969318574e-12,
-        "convertible": 1.1907978769709615e-10,
-        "coupe": 1.288962968477858e-13,
-        "hatchback": 0.000565718044526875,
-        "minivan": 4.828480541618774e-06,
-        "sedan": 1.170544355888481e-10,
-        "suv": 0.00029146479209885,
-        "truck": 2.240823304688888e-09,
-        "van": 0.9991376399993896,
-        "wagon": 3.2504817681910936e-07
-    }
+    "id": "c0956445-31ae-499f-a92b-626c625ee0d1",
+    "project": "11b2df83-5803-4460-a114-7ab4050aacfb",
+    "iteration": "af81cf37-b99f-436f-bc5f-f266a260da81",
+    "created": "2024-11-18T08:20:26.085Z",
+    "predictions": [
+        {
+            "probability": 0.63082653,
+            "tagId": "c39ed020-8ced-4318-b863-f070acf27de2",
+            "tagName": "Minivan"
+        },
+        {
+            "probability": 0.18555953,
+            "tagId": "529d484d-a1a0-45b6-9cf3-f4cd8cc6cc16",
+            "tagName": "Hatchback"
+        },
+        {
+            "probability": 0.10000038,
+            "tagId": "b8cad021-cc22-4c5a-a8e3-f348a7c6783a",
+            "tagName": "SUV"
+        },
+        {
+            "probability": 0.061792605,
+            "tagId": "86f23547-c358-40d4-a678-1f3edd5d76af",
+            "tagName": "Sedan"
+        },
+        {
+            "probability": 0.01790969,
+            "tagId": "a9d216fd-7f0d-41cb-bcfe-b308941f3793",
+            "tagName": "Wagon"
+        },
+        {
+            "probability": 0.0024593652,
+            "tagId": "9081ce12-0c24-4233-b5c0-41f3f1bc4b47",
+            "tagName": "Van"
+        },
+        {
+            "probability": 0.0012291444,
+            "tagId": "55603000-5d4e-47ca-9a9e-629e0998c96a",
+            "tagName": "Coupe"
+        },
+        {
+            "probability": 0.00017444807,
+            "tagId": "d8c7acf0-d7da-48fd-bc0a-e0505f670bb1",
+            "tagName": "Convertible"
+        },
+        {
+            "probability": 4.8288697E-05,
+            "tagId": "8b130c36-5f93-4d01-8321-03d59c31595d",
+            "tagName": "Cab"
+        }
+    ]
 }
 ```
 
@@ -55,60 +89,26 @@
       * Body:
         * form-data: {'image': file}
     * Example response:
-    
+
 ```
 {
-    "id": "56071738-5c1c-475d-a9ba-5e8ed24071b7",
-    "project": "11b2df83-5803-4460-a114-7ab4050aacfb",
-    "iteration": "af81cf37-b99f-436f-bc5f-f266a260da81",
-    "created": "2024-11-18T08:20:12.232Z",
-    "predictions": [
-        {
-            "probability": 0.9019991,
-            "tagId": "529d484d-a1a0-45b6-9cf3-f4cd8cc6cc16",
-            "tagName": "Hatchback"
-        },
-        {
-            "probability": 0.03417771,
-            "tagId": "86f23547-c358-40d4-a678-1f3edd5d76af",
-            "tagName": "Sedan"
-        },
-        {
-            "probability": 0.029618248,
-            "tagId": "55603000-5d4e-47ca-9a9e-629e0998c96a",
-            "tagName": "Coupe"
-        },
-        {
-            "probability": 0.02134795,
-            "tagId": "d8c7acf0-d7da-48fd-bc0a-e0505f670bb1",
-            "tagName": "Convertible"
-        },
-        {
-            "probability": 0.011801845,
-            "tagId": "a9d216fd-7f0d-41cb-bcfe-b308941f3793",
-            "tagName": "Wagon"
-        },
-        {
-            "probability": 0.0007898296,
-            "tagId": "b8cad021-cc22-4c5a-a8e3-f348a7c6783a",
-            "tagName": "SUV"
-        },
-        {
-            "probability": 0.000160571,
-            "tagId": "8b130c36-5f93-4d01-8321-03d59c31595d",
-            "tagName": "Cab"
-        },
-        {
-            "probability": 6.1412924E-05,
-            "tagId": "c39ed020-8ced-4318-b863-f070acf27de2",
-            "tagName": "Minivan"
-        },
-        {
-            "probability": 4.332852E-05,
-            "tagId": "9081ce12-0c24-4233-b5c0-41f3f1bc4b47",
-            "tagName": "Van"
-        }
-    ]
+    "message": "Image and form data received and processed successfully!",
+    "prediction": {
+        "category": "minivan",
+        "probability": 0.8009066581726074
+    },
+    "predictions": {
+        "cab": 2.8805218335037353e-06,
+        "convertible": 0.00022583271493203938,
+        "coupe": 0.008298404514789581,
+        "hatchback": 0.0649528056383133,
+        "minivan": 0.8009066581726074,
+        "sedan": 0.11703741550445557,
+        "suv": 0.005763165187090635,
+        "truck": 1.700457907816144e-08,
+        "van": 0.002808869583532214,
+        "wagon": 3.966191343351966e-06
+    }
 }
 ```
 
