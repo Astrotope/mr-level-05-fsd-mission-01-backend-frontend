@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Dropdown, Container, Header, Message, Segment, Form, Progress, Image } from 'semantic-ui-react'
 import axios from 'axios'
 
@@ -137,14 +137,16 @@ function App() {
           <div>
             <Header as='h2' size='medium'>Select AI Model</Header>
             <Button.Group>
-              {endpoints.map(endpoint => (
-                <Button 
-                  key={endpoint.key}
-                  primary={selectedEndpoint === endpoint.value}
-                  onClick={() => handleEndpointChange(endpoint.value)}
-                >
-                  {endpoint.text}
-                </Button>
+              {endpoints.map((endpoint, index) => (
+                <React.Fragment key={endpoint.key}>
+                  {index > 0 && <Button.Or />}
+                  <Button 
+                    primary={selectedEndpoint === endpoint.value}
+                    onClick={() => handleEndpointChange(endpoint.value)}
+                  >
+                    {endpoint.text}
+                  </Button>
+                </React.Fragment>
               ))}
             </Button.Group>
           </div>
