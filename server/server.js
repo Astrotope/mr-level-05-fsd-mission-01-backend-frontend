@@ -33,6 +33,13 @@ const endpoints = {
       'Prediction-Key': process.env.ENDPOINT2_KEY,
       'Content-Type': 'application/octet-stream'
     }
+  },
+  endpoint3: {
+    url: 'https://mrlevel05fsdmission01customvision-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/396ef7f4-2ec0-4bd5-990d-af98116abfbe/classify/iterations/MR_VEHICLE_AI_ID_01/image',
+    headers: {
+      'Prediction-Key': process.env.ENDPOINT3_KEY,
+      'Content-Type': 'application/octet-stream'
+    }
   }
 }
 
@@ -41,7 +48,7 @@ app.post('/api/classify', upload.single('image'), async (req, res) => {
     return res.status(400).json({ success: false, error: 'No image file provided' })
   }
 
-  const selectedEndpoint = req.query.endpoint || 'endpoint2'
+  const selectedEndpoint = req.query.endpoint || 'endpoint1'
   const endpoint = endpoints[selectedEndpoint]
 
   if (!endpoint) {
@@ -50,6 +57,9 @@ app.post('/api/classify', upload.single('image'), async (req, res) => {
 
   try {
     let response
+
+    // Ensure uploads directory exists
+    await fs.mkdir('uploads', { recursive: true })
     
     if (selectedEndpoint === 'endpoint1') {
       const formData = new FormData()
@@ -66,16 +76,20 @@ app.post('/api/classify', upload.single('image'), async (req, res) => {
       // Clean up the temporary file
       await fs.unlink(req.file.path)
 
+      if (!response.data || !response.data.predictions) {
+        throw new Error('Invalid response format from endpoint1')
+      }
+
       return res.json({
         success: true,
         prediction: response.data.prediction,
-        predictions: Object.entries(response.data.predictions).map(([tagName, probability]) => ({
+        predictions: Object.entries(response.data.predictions || {}).map(([tagName, probability]) => ({
           tagName,
           probability
         })).sort((a, b) => b.probability - a.probability)
       })
     } else {
-      // Endpoint 2
+      // Endpoint 2 and 3 (Azure Custom Vision)
       const imageBuffer = await fs.readFile(req.file.path)
       
       response = await axios.post(endpoint.url, imageBuffer, {
@@ -84,6 +98,10 @@ app.post('/api/classify', upload.single('image'), async (req, res) => {
 
       // Clean up the temporary file
       await fs.unlink(req.file.path)
+
+      if (!response.data || !response.data.predictions) {
+        throw new Error(`Invalid response format from ${selectedEndpoint}`)
+      }
 
       const sortedPredictions = response.data.predictions
         .sort((a, b) => b.probability - a.probability)
@@ -101,10 +119,12 @@ app.post('/api/classify', upload.single('image'), async (req, res) => {
     console.error('API Error:', error)
     
     // Clean up the temporary file in case of error
-    try {
-      await fs.unlink(req.file.path)
-    } catch (unlinkError) {
-      console.error('Error deleting temporary file:', unlinkError)
+    if (req.file && req.file.path) {
+      try {
+        await fs.unlink(req.file.path)
+      } catch (unlinkError) {
+        console.error('Error deleting temporary file:', unlinkError)
+      }
     }
 
     return res.status(500).json({

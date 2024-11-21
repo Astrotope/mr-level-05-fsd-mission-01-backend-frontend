@@ -12,7 +12,14 @@ const vehicleClasses = [
   { key: 'convertible', text: 'Convertible', value: 'convertible' },
   { key: 'hatchback', text: 'Hatchback', value: 'hatchback' },
   { key: 'minivan', text: 'Minivan', value: 'minivan' },
-  { key: 'cab', text: 'Ute (Utility)', value: 'cab' }
+  { key: 'cab', text: 'Ute (Utility)', value: 'cab' },
+  { key: 'Negative', text: '(No vehicle identified)', value: 'negative' }
+]
+
+const endpoints = [
+  { key: 'endpoint1', text: 'Model 1 (AZML1)', value: 'endpoint1' },
+  { key: 'endpoint2', text: 'Model 2 (AZCV1)', value: 'endpoint2' },
+  { key: 'endpoint3', text: 'Model 3 (AZCV2)', value: 'endpoint3' }
 ]
 
 function App() {
@@ -21,7 +28,7 @@ function App() {
   const [allPredictions, setAllPredictions] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [selectedEndpoint, setSelectedEndpoint] = useState('endpoint2')
+  const [selectedEndpoint, setSelectedEndpoint] = useState('endpoint1')
   const [selectedClass, setSelectedClass] = useState('')
   const [isVehicleConfirmed, setIsVehicleConfirmed] = useState(false)
   const [email, setEmail] = useState('')
@@ -64,6 +71,9 @@ function App() {
     setPrediction(null)
     setAllPredictions([])
     setError(null)
+    setSelectedClass('')
+    setIsVehicleConfirmed(false)
+    setIsQuoteSent(false)
   }
 
   const handleSubmit = async () => {
@@ -127,19 +137,15 @@ function App() {
           <div>
             <Header as='h2' size='medium'>Select AI Model</Header>
             <Button.Group>
-              <Button 
-                primary={selectedEndpoint === 'endpoint1'}
-                onClick={() => handleEndpointChange('endpoint1')}
-              >
-                Model 1
-              </Button>
-              <Button.Or />
-              <Button 
-                primary={selectedEndpoint === 'endpoint2'}
-                onClick={() => handleEndpointChange('endpoint2')}
-              >
-                Model 2
-              </Button>
+              {endpoints.map(endpoint => (
+                <Button 
+                  key={endpoint.key}
+                  primary={selectedEndpoint === endpoint.value}
+                  onClick={() => handleEndpointChange(endpoint.value)}
+                >
+                  {endpoint.text}
+                </Button>
+              ))}
             </Button.Group>
           </div>
 
@@ -177,7 +183,7 @@ function App() {
               disabled={!selectedFile}
               className="mt-4"
             >
-              Classify Vehicle
+              Identify My Vehicle Class
             </Button>
           </Form>
 
@@ -236,7 +242,7 @@ function App() {
                   onClick={handleConfirmClass}
                   disabled={!prediction && !selectedClass}
                 >
-                  Yes, My Vehicle is a {capitalizeFirstLetter(selectedClass)}
+                  Yes, My Vehicle is a {getVehicleDisplayName(prediction ? prediction.category : selectedClass)}
                 </Button>
               </div>
             </div>
