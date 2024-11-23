@@ -1,7 +1,9 @@
+// Import required React components and libraries
 import React, { useState } from 'react'
 import { Button, Dropdown, Container, Header, Message, Segment, Form, Progress, Image } from 'semantic-ui-react'
 import axios from 'axios'
 
+// Predefined list of vehicle classes with their display names and values
 const vehicleClasses = [
   { key: 'sedan', text: 'Sedan', value: 'sedan' },
   { key: 'suv', text: 'SUV', value: 'suv' },
@@ -16,34 +18,61 @@ const vehicleClasses = [
   { key: 'Negative', text: '(No vehicle identified)', value: 'negative' }
 ]
 
+// Configuration for the three AI models available for vehicle classification
 const endpoints = [
   { key: 'endpoint1', text: 'Model 1 (AZML1)', value: 'endpoint1' },
   { key: 'endpoint2', text: 'Model 2 (AZCV1)', value: 'endpoint2' },
   { key: 'endpoint3', text: 'Model 3 (AZCV2)', value: 'endpoint3' }
 ]
 
+// Main application component that handles the car insurance quote process
 function App() {
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [prediction, setPrediction] = useState(null)
-  const [allPredictions, setAllPredictions] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [selectedEndpoint, setSelectedEndpoint] = useState('endpoint1')
-  const [selectedClass, setSelectedClass] = useState('')
-  const [isVehicleConfirmed, setIsVehicleConfirmed] = useState(false)
-  const [email, setEmail] = useState('')
-  const [isQuoteSent, setIsQuoteSent] = useState(false)
-  const [imagePreview, setImagePreview] = useState(null)
+  // File handling states
+  const [selectedFile, setSelectedFile] = useState(null)        // Stores the uploaded image file
+  const [imagePreview, setImagePreview] = useState(null)        // Stores the data URL for image preview
 
+  // AI prediction states
+  const [prediction, setPrediction] = useState(null)            // Stores the primary prediction from the AI model
+  const [allPredictions, setAllPredictions] = useState([])      // Stores all predictions with confidence scores
+  const [selectedEndpoint, setSelectedEndpoint] = useState('endpoint1')  // Currently selected AI model endpoint
+
+  // UI state management
+  const [loading, setLoading] = useState(false)                 // Controls loading state during API calls
+  const [error, setError] = useState(null)                      // Stores error messages from API or validation
+  const [selectedClass, setSelectedClass] = useState('')        // User-selected or AI-predicted vehicle class
+  const [isVehicleConfirmed, setIsVehicleConfirmed] = useState(false)  // Tracks if user confirmed vehicle class
+
+  // Quote request states
+  const [email, setEmail] = useState('')                        // Stores user's email for quote
+  const [isQuoteSent, setIsQuoteSent] = useState(false)        // Tracks if quote request was sent
+
+  /**
+   * Capitalizes the first letter of a string and converts the rest to lowercase
+   * @param {string} string - The input string to transform
+   * @returns {string} The transformed string or empty string if input is falsy
+   */
   const capitalizeFirstLetter = (string) => {
     return string ? string.charAt(0).toUpperCase() + string.slice(1).toLowerCase() : '';
   }
 
+  /**
+   * Converts internal vehicle class tags to user-friendly display names
+   * Searches the vehicleClasses array for a matching tag and returns its display name
+   * Falls back to capitalized tag name if no match is found
+   * @param {string} tagName - The vehicle class tag from the AI model
+   * @returns {string} User-friendly display name for the vehicle class
+   */
   const getVehicleDisplayName = (tagName) => {
     const vehicleClass = vehicleClasses.find(vc => vc.value === tagName.toLowerCase());
     return vehicleClass ? vehicleClass.text : capitalizeFirstLetter(tagName);
   }
 
+  /**
+   * Handles file upload and preview generation
+   * Resets all prediction and confirmation states when a new file is selected
+   * Creates a preview URL for the selected image using FileReader
+   * @param {Event} event - The file input change event
+   */
   const handleFileChange = (event) => {
     const file = event.target.files[0]
     if (file) {
@@ -66,6 +95,12 @@ function App() {
     }
   }
 
+  /**
+   * Handles switching between different AI models
+   * Resets all prediction and confirmation states when changing models
+   * Maintains the selected file and preview
+   * @param {string} endpoint - The selected endpoint identifier
+   */
   const handleEndpointChange = (endpoint) => {
     setSelectedEndpoint(endpoint)
     setPrediction(null)
@@ -76,19 +111,29 @@ function App() {
     setIsQuoteSent(false)
   }
 
+  /**
+   * Processes image classification using the selected AI model
+   * Validates file selection, manages loading state, and handles errors
+   * Makes API call to backend for classification
+   * Updates prediction states with API response
+   */
   const handleSubmit = async () => {
+    // Validate that an image file has been selected
     if (!selectedFile) {
       setError('Please select an image file')
       return
     }
 
+    // Set loading state and clear any previous errors
     setLoading(true)
     setError(null)
 
     try {
+      // Prepare form data for API request
       const formData = new FormData()
       formData.append('image', selectedFile)
 
+      // Make POST request to classification API with selected model endpoint
       const response = await axios.post(
         `http://localhost:3111/api/classify?endpoint=${selectedEndpoint}`,
         formData,
@@ -99,27 +144,43 @@ function App() {
         }
       )
 
+      // Handle successful API response
       if (response.data.success) {
+        // Update states with primary prediction and all predictions
         setPrediction(response.data.prediction)
         setAllPredictions(response.data.predictions)
+        // Set the selected class to the predicted category
         setSelectedClass(response.data.prediction.category.toLowerCase())
       } else {
+        // If API returns success: false, throw error
         throw new Error(response.data.error)
       }
     } catch (err) {
+      // Log error for debugging and set user-friendly error message
       console.error('API Error:', err)
       setError('Error classifying image: ' + (err.response?.data?.error || err.message))
     } finally {
+      // Reset loading state regardless of success or failure
       setLoading(false)
     }
   }
 
+  /**
+   * Processes user confirmation of vehicle class
+   * Logs the confirmed class and updates confirmation state
+   * Enables the quote request form after confirmation
+   */
   const handleConfirmClass = () => {
     const confirmedClass = selectedClass
     console.log('Confirmed vehicle class:', confirmedClass)
     setIsVehicleConfirmed(true)
   }
 
+  /**
+   * Handles the quote request submission
+   * Logs the email and updates quote sent state
+   * TODO: Implement actual quote submission logic
+   */
   const handleSendQuote = () => {
     console.log('Sending quote to:', email)
     setIsQuoteSent(true)
@@ -127,13 +188,19 @@ function App() {
   }
 
   return (
+    // Main container for the car insurance quote application
+    // Uses flex layout and top padding for proper spacing
     <Container className="flex flex-col pt-8">
+      {/* Application title */}
       <Header as='h1' textAlign='center' size='huge' className="mb-8">
         Car Insurance Quote
       </Header>
 
+      {/* Main content area with raised appearance and padding */}
       <Segment raised padded>
         <div className="space-y-6">
+          {/* Model selection section - Allows users to choose between different AI models
+              Displays models in a button group with 'OR' separators between options */}
           <div>
             <Header as='h2' size='medium'>Select AI Model</Header>
             <Button.Group>
@@ -151,6 +218,11 @@ function App() {
             </Button.Group>
           </div>
 
+          {/* Image upload and classification form section
+              Includes:
+              - File input with custom styling
+              - Image preview with size constraints and shadow
+              - Classification button that's disabled until an image is selected */}
           <Form>
             <Form.Field>
               <label>Upload Vehicle Image</label>
@@ -189,6 +261,8 @@ function App() {
             </Button>
           </Form>
 
+          {/* Error message section - Displays any API or validation errors
+              Shows a negative message with header and error details */}
           {error && (
             <Message negative>
               <Message.Header>Error</Message.Header>
@@ -196,6 +270,12 @@ function App() {
             </Message>
           )}
 
+          {/* Vehicle classification results and confirmation section - Only visible after successful classification
+              Includes:
+              - Primary prediction with confidence score
+              - All predictions list with progress bars
+              - Vehicle class confirmation/correction dropdown
+              - Confirmation button */}
           {prediction && (
             <div className="mt-6 space-y-4">
               <Message positive>
@@ -250,6 +330,12 @@ function App() {
             </div>
           )}
 
+          {/* Quote request section - Only visible after vehicle class confirmation
+              Includes:
+              - Success message with confirmed vehicle class
+              - Email input form
+              - Quote request button
+              - Success message after quote is sent */}
           {isVehicleConfirmed && (
             <div className="mt-6 space-y-4">
               <Message positive>
