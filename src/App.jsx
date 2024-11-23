@@ -1,6 +1,17 @@
 // Import required React components and libraries
 import React, { useState } from 'react'
-import { Button, Dropdown, Container, Header, Message, Segment, Form, Progress, Image } from 'semantic-ui-react'
+// Semantic UI React components used:
+// - Container: Responsive wrapper that centers content
+// - Header: Styled heading component with size variants
+// - Form: Groups form elements with consistent styling
+// - Button: Styled button with various states and colors
+// - Image: Responsive image component with built-in sizing
+// - Segment: Groups related content in a box with padding
+// - Loader: Loading spinner animation
+// - Message: Styled message box for feedback and errors
+// - Dropdown: Select input component with customizable options
+// - Progress: Progress bar component for visualizing data
+import { Container, Header, Form, Button, Image, Segment, Loader, Message, Dropdown, Progress } from 'semantic-ui-react'
 import axios from 'axios'
 
 // Predefined list of vehicle classes with their display names and values
@@ -190,23 +201,28 @@ function App() {
   return (
     // Main container for the car insurance quote application
     // Uses flex layout and top padding for proper spacing
+    // Container component centers content and provides responsive padding
     <Container className="flex flex-col pt-8">
-      {/* Application title */}
+      {/* Header component with large size variant for main title */}
+      {/* Header with bottom margin */}
       <Header as='h1' textAlign='center' size='huge' className="mb-8">
         Car Insurance Quote
       </Header>
-
       {/* Main content area with raised appearance and padding */}
+      {/* Segment groups the main content in a box with padding and border */}
       <Segment raised padded>
+        {/* Content container with vertical spacing between children */}
         <div className="space-y-6">
           {/* Model selection section - Allows users to choose between different AI models
               Displays models in a button group with 'OR' separators between options */}
           <div>
             <Header as='h2' size='medium'>Select AI Model</Header>
+            {/* Button.Group component groups buttons with 'OR' separators */}
             <Button.Group>
               {endpoints.map((endpoint, index) => (
                 <React.Fragment key={endpoint.key}>
                   {index > 0 && <Button.Or />}
+                  {/* Button component with primary color and onClick event */}
                   <Button 
                     primary={selectedEndpoint === endpoint.value}
                     onClick={() => handleEndpointChange(endpoint.value)}
@@ -226,6 +242,18 @@ function App() {
           <Form>
             <Form.Field>
               <label>Upload Vehicle Image</label>
+              {/* Tailwind classes for custom file input styling:
+                  - block w-full: Makes input take full width
+                  - text-sm text-gray-500: Small, gray text for the file name
+                  - file:* classes style the "Choose File" button:
+                    - mr-4: Right margin
+                    - py-2 px-4: Padding vertical/horizontal
+                    - rounded-full: Fully rounded corners
+                    - border-0: No border
+                    - text-sm font-semibold: Small, bold text
+                    - bg-blue-500 text-white: Blue background, white text
+                    - hover:bg-blue-600: Darker blue on hover
+              */}
               <input
                 type="file"
                 onChange={handleFileChange}
@@ -239,6 +267,7 @@ function App() {
               />
             </Form.Field>
 
+            {/* Image component displays the uploaded image responsively */}
             {imagePreview && (
               <div className="mt-4 mb-4">
                 <Image 
@@ -250,6 +279,7 @@ function App() {
               </div>
             )}
 
+            {/* Button component with primary color, loading state, and disabled state */}
             <Button 
               primary 
               loading={loading}
@@ -278,17 +308,20 @@ function App() {
               - Confirmation button */}
           {prediction && (
             <div className="mt-6 space-y-4">
+              {/* Message component displays positive (green) message for successful classification */}
               <Message positive>
                 <Message.Header>Vehicle Classification Result</Message.Header>
                 <p>Your vehicle appears to be a {getVehicleDisplayName(prediction.category)} ({(prediction.probability * 100).toFixed(2)}% confidence)</p>
               </Message>
 
+              {/* Section for displaying all predictions in a sorted list */}
               {allPredictions.length > 0 && (
                 <Segment>
                   <Header as='h3' size='small'>All Predictions</Header>
                   <div className="space-y-3">
                     {allPredictions.map((pred, index) => (
                       <div key={pred.tagName}>
+                        {/* Flex container for prediction label and percentage, with space between */}
                         <div className="flex justify-between text-sm mb-1">
                           <span>{getVehicleDisplayName(pred.tagName)}</span>
                           <span>{(pred.probability * 100).toFixed(2)}%</span>
@@ -304,7 +337,9 @@ function App() {
                 </Segment>
               )}
 
+              {/* Vehicle class confirmation section */}
               <div>
+                {/* Gray text with bottom margin */}
                 <p className="text-gray-600 mb-2">
                   If this is not correct, please select your vehicle class from the dropdown below:
                 </p>
@@ -338,6 +373,7 @@ function App() {
               - Success message after quote is sent */}
           {isVehicleConfirmed && (
             <div className="mt-6 space-y-4">
+              {/* Message component displays positive (green) message for confirmed vehicle class */}
               <Message positive>
                 <p>
                   Thanks for confirming your Vehicle is a {capitalizeFirstLetter(selectedClass)}, 
@@ -347,6 +383,8 @@ function App() {
               <Form>
                 <Form.Field>
                   <label>Email Address</label>
+                  {/* Input component with custom styling for email input */}
+                  {/* Email input with full width, rounded corners, and gray border */}
                   <input
                     type="email"
                     placeholder="Enter your email"
@@ -355,6 +393,7 @@ function App() {
                     className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
                   />
                 </Form.Field>
+                {/* Button component with primary color, onClick event, and disabled state */}
                 <Button
                   primary
                   fluid
@@ -365,6 +404,7 @@ function App() {
                   Send Me a Quote
                 </Button>
               </Form>
+              {/* Message component displays positive (green) message after quote is sent */}
               {isQuoteSent && (
                 <Message positive>
                   <Message.Header>Success!</Message.Header>
