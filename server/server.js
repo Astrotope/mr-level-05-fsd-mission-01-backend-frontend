@@ -63,15 +63,18 @@ const endpoints = {
 
 /**
  * POST /api/classify - Vehicle Classification Endpoint
- * Accepts an image file and classifies it using the specified AI model
- * Query Parameters:
- *   - endpoint: The AI model to use (endpoint1, endpoint2, or endpoint3)
- * Request Body:
- *   - image: The image file to classify (multipart/form-data)
- * Returns:
- *   - success: boolean indicating if the classification was successful
- *   - prediction: the primary prediction (highest confidence)
- *   - predictions: array of all predictions with confidence scores
+ * Uses multer middleware to handle multipart/form-data image uploads:
+ * - upload.single('image'): Processes a single file from field named 'image'
+ * - Automatically saves file to ./uploads directory
+ * - Adds file info to req.file object containing:
+ *   - originalname: Original file name from user's system
+ *   - path: Temporary path where file is saved
+ *   - mimetype: Type of file (e.g., image/jpeg, image/png, image/gif)
+ *   The API accepts JPEG, PNG, and GIF image formats
+ * 
+ * @param {Object} req.file - Contains uploaded file information from multer
+ * @param {string} req.query.endpoint - The AI model to use (endpoint1, endpoint2, or endpoint3)
+ * @returns {Object} JSON response with classification results
  */
 app.post('/api/classify', upload.single('image'), async (req, res) => {
   // Validate image file was provided
