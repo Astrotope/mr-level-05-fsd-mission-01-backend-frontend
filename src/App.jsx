@@ -29,11 +29,12 @@ const vehicleClasses = [
   { key: 'Negative', text: '(No vehicle identified)', value: 'negative' }
 ]
 
-// Configuration for the three AI models available for vehicle classification
+// Configuration for the four AI models available for vehicle classification
 const endpoints = [
   { key: 'endpoint1', text: 'Model 1 (AZML1)', value: 'endpoint1' },
-  { key: 'endpoint2', text: 'Model 2 (AZCV1)', value: 'endpoint2' },
-  { key: 'endpoint3', text: 'Model 3 (AZCV2)', value: 'endpoint3' }
+  { key: 'endpoint2', text: 'Model 2 (AZML2)', value: 'endpoint2' },
+  { key: 'endpoint3', text: 'Model 3 (AZCV1)', value: 'endpoint3' },
+  { key: 'endpoint4', text: 'Model 4 (AZCV2)', value: 'endpoint4' }
 ]
 
 // Main application component that handles the car insurance quote process

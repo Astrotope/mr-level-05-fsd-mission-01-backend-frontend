@@ -34,8 +34,9 @@ app.use(express.json())            // Parse JSON request bodies
  * Configuration for different AI model endpoints
  * Each endpoint has its own URL and authentication method:
  * - endpoint1: Azure ML endpoint using Bearer token
- * - endpoint2: Azure Custom Vision endpoint using Prediction-Key
+ * - endpoint2: Azure ML endpoint using Bearer token
  * - endpoint3: Azure Custom Vision endpoint using Prediction-Key
+ * - endpoint4: Azure Custom Vision endpoint using Prediction-Key
  */
 const endpoints = {
   endpoint1: {
@@ -46,16 +47,23 @@ const endpoints = {
     }
   },
   endpoint2: {
-    url: 'https://mrlevel05fsdmission01customvision-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/11b2df83-5803-4460-a114-7ab4050aacfb/classify/iterations/MR_VEHICLE_AI_ID_04/image',
+    url: 'https://ai-vehicle-id-202411260703.australiaeast.inference.ml.azure.com/predict',
     headers: {
-      'Prediction-Key': process.env.ENDPOINT2_KEY,
-      'Content-Type': 'application/octet-stream'
+      'Authorization': `Bearer ${process.env.ENDPOINT2_KEY}`,
+      'Content-Type': 'multipart/form-data'
     }
   },
   endpoint3: {
     url: 'https://mrlevel05fsdmission01customvision-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/396ef7f4-2ec0-4bd5-990d-af98116abfbe/classify/iterations/MR_VEHICLE_AI_ID_01/image',
     headers: {
       'Prediction-Key': process.env.ENDPOINT3_KEY,
+      'Content-Type': 'application/octet-stream'
+    }
+  },
+  endpoint4: {
+    url: 'https://mrlevel05fsdmission01customvision-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/11b2df83-5803-4460-a114-7ab4050aacfb/classify/iterations/MR_VEHICLE_AI_ID_05/image',
+    headers: {
+      'Prediction-Key': process.env.ENDPOINT4_KEY,
       'Content-Type': 'application/octet-stream'
     }
   }
@@ -97,8 +105,8 @@ app.post('/api/classify', upload.single('image'), async (req, res) => {
     // Ensure uploads directory exists for temporary files
     await fs.mkdir('uploads', { recursive: true })
     
-    if (selectedEndpoint === 'endpoint1') {
-      // Handle Azure ML endpoint (endpoint1)
+    if (selectedEndpoint === 'endpoint1' || selectedEndpoint === 'endpoint2') {
+      // Handle Azure ML endpoints (endpoint1 and endpoint2)
       // Requires multipart/form-data format
       const formData = new FormData()
       const fileContent = await fs.readFile(req.file.path)
@@ -116,7 +124,7 @@ app.post('/api/classify', upload.single('image'), async (req, res) => {
 
       // Validate response format
       if (!response.data || !response.data.predictions) {
-        throw new Error('Invalid response format from endpoint1')
+        throw new Error('Invalid response format from endpoint')
       }
 
       // Format response for frontend
@@ -129,7 +137,7 @@ app.post('/api/classify', upload.single('image'), async (req, res) => {
         })).sort((a, b) => b.probability - a.probability)
       })
     } else {
-      // Handle Azure Custom Vision endpoints (endpoint2 and endpoint3)
+      // Handle Azure Custom Vision endpoints (endpoint3 and endpoint4)
       // Requires raw image data
       const imageBuffer = await fs.readFile(req.file.path)
       
