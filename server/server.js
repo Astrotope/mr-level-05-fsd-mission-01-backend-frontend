@@ -54,14 +54,14 @@ const endpoints = {
     }
   },
   endpoint3: {
-    url: 'https://mrlevel05fsdmission01customvision-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/396ef7f4-2ec0-4bd5-990d-af98116abfbe/classify/iterations/MR_VEHICLE_AI_ID_01/image',
+    url: 'https://mrlevel05fsdmission01customvision-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/11b2df83-5803-4460-a114-7ab4050aacfb/classify/iterations/MR_VEHICLE_AI_ID_04/image',
     headers: {
       'Prediction-Key': process.env.ENDPOINT3_KEY,
       'Content-Type': 'application/octet-stream'
     }
   },
   endpoint4: {
-    url: 'https://mrlevel05fsdmission01customvision-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/11b2df83-5803-4460-a114-7ab4050aacfb/classify/iterations/MR_VEHICLE_AI_ID_05/image',
+    url: 'https://mrlevel05fsdmission01customvision-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/396ef7f4-2ec0-4bd5-990d-af98116abfbe/classify/iterations/MR_VEHICLE_AI_ID_01/image',
     headers: {
       'Prediction-Key': process.env.ENDPOINT4_KEY,
       'Content-Type': 'application/octet-stream'
